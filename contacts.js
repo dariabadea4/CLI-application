@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 
 const contactsPath = path.join(__dirname, "db/contacts.json");
 
-
 async function listContacts() {
   const allContacts = await fs.readFile(contactsPath);
   return JSON.parse(allContacts);
@@ -21,13 +20,21 @@ async function getContactById(contactId) {
 }
 
 async function removeContact(contactId) {
-  const allContacts = await listContacts();
-  const index = allContacts.findIndex((contact) => contact.id === contactId);
-  if (index === -1) return null;
-  const [deletedContact] = allContacts.splice(index, 1);
-  await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
-  return deletedContact;
-}
+    const allContacts = await listContacts();
+    const index = allContacts.findIndex((contact) => contact.id === contactId);
+    
+    if (index === -1) {
+      console.log("❌ Contact not found!");
+      return null;
+    }
+  
+    const [deletedContact] = allContacts.splice(index, 1);
+    await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+  
+    console.log("✅ Contact deleted successfully:", deletedContact);
+    return deletedContact;
+  }
+  
 
 async function addContact(name, email, phone) {
   const allContacts = await listContacts();
